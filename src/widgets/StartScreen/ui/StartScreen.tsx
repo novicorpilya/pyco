@@ -3,8 +3,12 @@ import { useGameStore } from '../../../shared/model/useGameStore';
 import { EventBus } from '../../../shared/lib/phaser/EventBus';
 
 export const StartScreen = () => {
-  const { startGame, isMuted, setMuted, isFullscreen, volume, setVolume } = useGameStore();
-  const setLoading = useGameStore((state) => state.setLoading);
+  const openLevelSelect = useGameStore((state) => state.openLevelSelect);
+  const isMuted = useGameStore((state) => state.isMuted);
+  const setMuted = useGameStore((state) => state.setMuted);
+  const isFullscreen = useGameStore((state) => state.isFullscreen);
+  const volume = useGameStore((state) => state.volume);
+  const setVolume = useGameStore((state) => state.setVolume);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Add custom styles for the "dance", "glow", "float" and "shimmer" animations
@@ -31,15 +35,19 @@ export const StartScreen = () => {
       }
       .animate-dance {
         animation: character-dance 1s infinite ease-in-out;
+        will-change: transform;
       }
       .animate-glow {
         animation: button-glow 2s infinite ease-in-out;
+        will-change: box-shadow;
       }
       .animate-splash-float {
         animation: splash-float 6s infinite ease-in-out;
+        will-change: transform;
       }
       .animate-shimmer {
         animation: splash-shimmer 8s infinite ease-in-out;
+        will-change: transform;
       }
     `;
     document.head.appendChild(style);
@@ -93,8 +101,7 @@ export const StartScreen = () => {
   }, [isMuted]);
 
   const handleStart = () => {
-    setLoading(true);
-    startGame();
+    openLevelSelect();
   };
 
   return (

@@ -18,6 +18,8 @@ export const GameContainer = () => {
                 ...GameConfig,
                 parent: containerRef.current
             });
+            // Ensure scene is started
+            game.current.scene.start('LevelOneScene');
         }
 
         return () => {

@@ -5,7 +5,7 @@ export type GameEventMap = {
   // UI -> Scene
   'sound-muted': boolean;
   'volume-change': number;
-  'quiz-answer-selected': { index: number; isCorrect: boolean; isLast: boolean };
+  'quiz-answer-selected': { questionIndex: number; isCorrect: boolean; isLast: boolean };
   'quiz-next-question': void;
   'show-question': { index?: number } | undefined;
   'hide-question': void;

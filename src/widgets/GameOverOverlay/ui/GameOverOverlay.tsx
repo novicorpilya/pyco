@@ -14,14 +14,7 @@ export const GameOverOverlay = () => {
     }, []);
 
     const handleRestart = () => {
-        useGameStore.setState({ 
-            hp: 100, 
-            xp: 0, 
-            level: 1, 
-            potions: 0,
-            isStarted: true, 
-            isPaused: false 
-        });
+        useGameStore.getState().restartCurrentLevel();
         setIsVisible(false);
         EventBus.emit('restart-game'); 
     };

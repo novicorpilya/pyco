@@ -10,9 +10,14 @@ export const GameConfig: Types.Core.GameConfig = {
     parent: 'game-container',
     backgroundColor: '#028af8',
     render: {
-        antialias: true,
+        antialias: false,
         pixelArt: false,
-        roundPixels: false
+        roundPixels: true,
+        powerPreference: 'high-performance'
+    },
+    fps: {
+        target: 60,
+        forceSetTimeOut: false
     },
     scale: {
         mode: Scale.FIT,

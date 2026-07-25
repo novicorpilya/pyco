@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useGameStore } from '../../../shared/model/useGameStore';
+import { SkinSelectModal } from '../../SkinSelectModal';
 
 export const EntryScreen = () => {
-    const { enterSystem, isFullscreen } = useGameStore();
+    const { enterSystem, isFullscreen, playerName, setPlayerName } = useGameStore();
     const [isVisible, setIsVisible] = useState(true);
+    const [showSkinModal, setShowSkinModal] = useState(false);
     const [noBtnPos, setNoBtnPos] = useState({ x: 0, y: 0 });
     const [isNoBtnEscaping, setIsNoBtnEscaping] = useState(false);
     
@@ -132,7 +134,7 @@ export const EntryScreen = () => {
             <div className={`relative z-10 w-full flex flex-col items-center transition-all duration-700 ${isFullscreen ? 'max-w-none px-0 h-screen justify-center' : 'max-w-5xl px-8'}`}>
                 
                 {/* Typing Text Wrapper */}
-                <h1 className="text-xl md:text-5xl font-black text-white/90 text-center leading-tight tracking-tighter mb-24 uppercase italic drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                <h1 className="text-xl md:text-5xl font-black text-white/90 text-center leading-tight tracking-tighter mb-12 uppercase italic drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
                     <span className="block mb-2">
                         {getTypedSegment(part1, 0)}
                     </span>
@@ -149,6 +151,30 @@ export const EntryScreen = () => {
                         )}
                     </span>
                 </h1>
+
+                {/* Player Name Input Field & Wardrobe Button */}
+                <div className="mb-8 flex flex-col items-center gap-2 z-20">
+                    <label className="text-xs font-bold uppercase text-indigo-300 tracking-widest drop-shadow">
+                        Имя Пилота PYCO:
+                    </label>
+                    <div className="flex items-center gap-3">
+                        <input
+                            type="text"
+                            value={playerName}
+                            onChange={(e) => setPlayerName(e.target.value)}
+                            placeholder="Введите ваш ник..."
+                            className="px-6 py-3 bg-slate-900/90 border-2 border-indigo-500/50 rounded-2xl text-white font-bold text-center text-lg focus:border-indigo-400 focus:outline-none shadow-[0_0_20px_rgba(79,70,229,0.3)] w-64 transition-all hover:border-indigo-400"
+                        />
+                        <button
+                            onClick={() => setShowSkinModal(true)}
+                            className="px-4 py-3 bg-cyan-500/20 hover:bg-cyan-500/40 border-2 border-cyan-500/50 rounded-2xl text-cyan-300 font-black text-sm uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:scale-105 active:scale-95 flex items-center gap-1.5"
+                            title="Открыть Гардероб Скинов"
+                        >
+                            <span>🛡️</span>
+                            <span>Скины</span>
+                        </button>
+                    </div>
+                </div>
 
                 {/* Buttons Container */}
                 <div className="flex flex-col md:flex-row gap-12 items-center justify-center w-full relative h-40">
@@ -236,6 +262,10 @@ export const EntryScreen = () => {
                     animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
                 }
             `}</style>
+            <SkinSelectModal
+                isOpen={showSkinModal}
+                onClose={() => setShowSkinModal(false)}
+            />
         </div>
     );
 };

@@ -2,7 +2,9 @@ import { useGameStore } from '../../../shared/model/useGameStore';
 import { EventBus } from '../../../shared/lib/phaser/EventBus';
 
 export const PauseMenu = () => {
-    const { isPaused, setPaused, backToMenu } = useGameStore();
+    const isPaused = useGameStore((state) => state.isPaused);
+    const setPaused = useGameStore((state) => state.setPaused);
+    const backToMenu = useGameStore((state) => state.backToMenu);
 
     if (!isPaused) return null;
 
@@ -12,14 +14,8 @@ export const PauseMenu = () => {
     };
 
     const handleRestart = () => {
-        // Reset only gameplay stats
-        useGameStore.setState({ 
-            hp: 100, 
-            xp: 0, 
-            level: 1, 
-            potions: 0,
-            isPaused: false 
-        });
+        useGameStore.getState().restartCurrentLevel();
+        EventBus.emit('resume-game');
         EventBus.emit('restart-game');
     };
 

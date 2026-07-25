@@ -8,14 +8,25 @@ import { LoadingScreen } from '../widgets/LoadingScreen/ui/LoadingScreen';
 import { PauseMenu } from '../widgets/PauseMenu/ui/PauseMenu';
 import { InstructionPopup } from '../widgets/InstructionPopup/ui/InstructionPopup';
 import { VictoryOverlay } from '../widgets/VictoryOverlay/ui/VictoryOverlay';
+import { LevelSelectModal } from '../widgets/LevelSelectModal/ui/LevelSelectModal';
 import { ErrorScreen } from '../widgets/ErrorScreen/ui/ErrorScreen';
 import { useGameStore } from '../shared/model/useGameStore';
 import { EventBus } from '../shared/lib/phaser/EventBus';
 import './App.css';
 
 function App() {
-  const { isStarted, hasEntered, isMuted, setMuted, isLoading, error, setPaused, hasSeenManual } = useGameStore();
-  const { isFullscreen, setFullscreen, volume, setVolume } = useGameStore();
+  const isStarted = useGameStore((state) => state.isStarted);
+  const hasEntered = useGameStore((state) => state.hasEntered);
+  const isMuted = useGameStore((state) => state.isMuted);
+  const setMuted = useGameStore((state) => state.setMuted);
+  const isLoading = useGameStore((state) => state.isLoading);
+  const error = useGameStore((state) => state.error);
+  const setPaused = useGameStore((state) => state.setPaused);
+  const hasSeenManual = useGameStore((state) => state.hasSeenManual);
+  const isFullscreen = useGameStore((state) => state.isFullscreen);
+  const setFullscreen = useGameStore((state) => state.setFullscreen);
+  const volume = useGameStore((state) => state.volume);
+  const setVolume = useGameStore((state) => state.setVolume);
 
   // Sync fullscreen state with browser events
   useEffect(() => {
@@ -151,6 +162,7 @@ function App() {
       <PauseMenu />
       {isStarted && !isLoading && !hasSeenManual && <InstructionPopup />}
       <VictoryOverlay />
+      <LevelSelectModal />
 
       {/* High Priority Overlays */}
       {isLoading && <LoadingScreen />}

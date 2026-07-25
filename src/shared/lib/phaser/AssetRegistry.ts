@@ -8,6 +8,7 @@ export const TextureKeys = {
   Characters: 'characters',
   Tiles: 'tiles',
   Backgrounds: 'backgrounds',
+  Enemies: 'enemies',
 } as const;
 
 export const AudioKeys = {

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useGameStore } from '../../../shared/model/useGameStore';
 
 export const LoadingScreen: React.FC = () => {
   const [progress, setProgress] = useState(0);
@@ -16,15 +17,28 @@ export const LoadingScreen: React.FC = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setProgress((prev) => {
-        const next = prev >= 100 ? 100 : prev + 1;
-        // Cycle status text every 20%
+        const next = prev >= 100 ? 100 : prev + 3;
+        if (next >= 100) {
+          setTimeout(() => {
+            useGameStore.getState().setLoading(false);
+          }, 150);
+        }
         if (Math.floor(next / 20) !== Math.floor(prev / 20)) {
           setStatusText(messages[Math.floor(next / 20) % messages.length]);
         }
         return next;
       });
-    }, 40);
-    return () => clearInterval(timer);
+    }, 30);
+
+    // Safety fallback: Ensure loading screen disappears after 1.5 seconds max
+    const safetyTimer = setTimeout(() => {
+      useGameStore.getState().setLoading(false);
+    }, 1500);
+
+    return () => {
+      clearInterval(timer);
+      clearTimeout(safetyTimer);
+    };
   }, []);
 
   return (
