@@ -37,6 +37,13 @@ describe('useGameStore PlayerName & Leaderboard', () => {
     expect(result.error).toBe('Никнейм должен содержать минимум 3 символа');
   });
 
+  it('should set hasCompletedWelcome to true on successful nickname registration', () => {
+    useGameStore.setState({ hasCompletedWelcome: false });
+    const result = useGameStore.getState().registerNickname('AwesomeDev');
+    expect(result.success).toBe(true);
+    expect(useGameStore.getState().hasCompletedWelcome).toBe(true);
+  });
+
   it('should handle startSelectedLevel and reset pause/loading flags', () => {
     useGameStore.getState().setPaused(true);
     useGameStore.getState().startSelectedLevel(1);

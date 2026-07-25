@@ -10,6 +10,7 @@ export const StartScreen = () => {
   const volume = useGameStore((state) => state.volume);
   const setVolume = useGameStore((state) => state.setVolume);
   const playerName = useGameStore((state) => state.playerName);
+  const hasCompletedWelcome = useGameStore((state) => state.hasCompletedWelcome);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Add custom styles for the "dance", "glow", "float" and "shimmer" animations
@@ -72,15 +73,21 @@ export const StartScreen = () => {
     audio.loop = true;
 
     const playAudio = () => {
-      if (audio && !isMuted) {
+      if (audio && !isMuted && hasCompletedWelcome) {
         audio.play().catch(() => { /* Autoplay block */ });
       }
     };
 
-    playAudio();
+    if (hasCompletedWelcome) {
+      playAudio();
+    } else {
+      audio.pause();
+    }
 
     const handleFirstInteraction = () => {
-      playAudio();
+      if (hasCompletedWelcome) {
+        playAudio();
+      }
       window.removeEventListener('pointerdown', handleFirstInteraction);
       window.removeEventListener('keydown', handleFirstInteraction);
     };
@@ -88,7 +95,7 @@ export const StartScreen = () => {
     window.addEventListener('pointerdown', handleFirstInteraction);
     window.addEventListener('keydown', handleFirstInteraction);
 
-    if (isMuted) {
+    if (isMuted || !hasCompletedWelcome) {
       audio.pause();
     }
     
@@ -99,7 +106,7 @@ export const StartScreen = () => {
         audio.pause();
       }
     };
-  }, [isMuted]);
+  }, [isMuted, hasCompletedWelcome]);
 
   const handleStart = () => {
     openLevelSelect();

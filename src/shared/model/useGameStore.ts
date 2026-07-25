@@ -37,6 +37,7 @@ interface GameState {
   completionTimeSeconds: number;
   completedLevelIds: number[];
   equippedSkin: SkinType;
+  hasCompletedWelcome: boolean;
   
   registeredNicknames: string[];
   
@@ -105,6 +106,7 @@ export const useGameStore = create<GameState>((set) => ({
   equippedSkin: (typeof window !== 'undefined' 
     ? (localStorage.getItem('pyco_equipped_skin') as SkinType) || 'default' 
     : 'default'),
+  hasCompletedWelcome: typeof window !== 'undefined' ? !!localStorage.getItem('pyco_player_name') : false,
   registeredNicknames: (typeof window !== 'undefined'
     ? (() => {
         try {
@@ -137,7 +139,7 @@ export const useGameStore = create<GameState>((set) => ({
       localStorage.setItem('pyco_registered_nicknames', JSON.stringify(updated));
     }
 
-    set({ playerName: trimmed, registeredNicknames: updated });
+    set({ playerName: trimmed, registeredNicknames: updated, hasCompletedWelcome: true });
     return { success: true };
   },
 
