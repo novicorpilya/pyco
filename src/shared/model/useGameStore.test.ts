@@ -18,6 +18,25 @@ describe('useGameStore PlayerName & Leaderboard', () => {
     expect(useGameStore.getState().playerName).toBe('PythonCoder42');
   });
 
+  it('should reject registering a duplicate nickname', () => {
+    useGameStore.setState({ registeredNicknames: ['Alex', 'PycoMaster', 'PythonUser'] });
+
+    const resultDuplicate = useGameStore.getState().registerNickname('Alex');
+    expect(resultDuplicate.success).toBe(false);
+    expect(resultDuplicate.error).toBe('Игрок с таким ником уже зарегистрирован!');
+
+    const resultNew = useGameStore.getState().registerNickname('NewCoder');
+    expect(resultNew.success).toBe(true);
+    expect(useGameStore.getState().playerName).toBe('NewCoder');
+    expect(useGameStore.getState().registeredNicknames).toContain('NewCoder');
+  });
+
+  it('should reject nicknames that are too short', () => {
+    const result = useGameStore.getState().registerNickname('Ab');
+    expect(result.success).toBe(false);
+    expect(result.error).toBe('Никнейм должен содержать минимум 3 символа');
+  });
+
   it('should handle startSelectedLevel and reset pause/loading flags', () => {
     useGameStore.getState().setPaused(true);
     useGameStore.getState().startSelectedLevel(1);

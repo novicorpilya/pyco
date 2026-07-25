@@ -38,7 +38,10 @@ interface GameState {
   completedLevelIds: number[];
   equippedSkin: SkinType;
   
+  registeredNicknames: string[];
+  
   // Actions
+  registerNickname: (name: string) => { success: boolean; error?: string };
   setPlayerName: (name: string) => void;
   addLeaderboardEntry: (entry: LeaderboardEntry) => void;
   completeLevel: (levelId: number) => void;
@@ -102,6 +105,41 @@ export const useGameStore = create<GameState>((set) => ({
   equippedSkin: (typeof window !== 'undefined' 
     ? (localStorage.getItem('pyco_equipped_skin') as SkinType) || 'default' 
     : 'default'),
+  registeredNicknames: (typeof window !== 'undefined'
+    ? (() => {
+        try {
+          const saved = JSON.parse(localStorage.getItem('pyco_registered_nicknames') || '[]');
+          return saved.length > 0 ? saved : ['Admin', 'PycoMaster', 'PythonUser'];
+        } catch {
+          return ['Admin', 'PycoMaster', 'PythonUser'];
+        }
+      })()
+    : ['Admin', 'PycoMaster', 'PythonUser']),
+
+  registerNickname: (name: string) => {
+    const trimmed = name.trim();
+    if (trimmed.length < 3) {
+      return { success: false, error: 'Никнейм должен содержать минимум 3 символа' };
+    }
+
+    const state = useGameStore.getState();
+    const isTaken = state.registeredNicknames.some(
+      (existing) => existing.toLowerCase() === trimmed.toLowerCase()
+    );
+
+    if (isTaken) {
+      return { success: false, error: 'Игрок с таким ником уже зарегистрирован!' };
+    }
+
+    const updated = [...state.registeredNicknames, trimmed];
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('pyco_player_name', trimmed);
+      localStorage.setItem('pyco_registered_nicknames', JSON.stringify(updated));
+    }
+
+    set({ playerName: trimmed, registeredNicknames: updated });
+    return { success: true };
+  },
 
   setPlayerName: (playerName) => {
     if (typeof window !== 'undefined') {

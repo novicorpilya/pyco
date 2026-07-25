@@ -9,8 +9,10 @@ import { PauseMenu } from '../widgets/PauseMenu/ui/PauseMenu';
 import { InstructionPopup } from '../widgets/InstructionPopup/ui/InstructionPopup';
 import { VictoryOverlay } from '../widgets/VictoryOverlay/ui/VictoryOverlay';
 import { LevelSelectModal } from '../widgets/LevelSelectModal/ui/LevelSelectModal';
+import { WelcomeModal } from '../widgets/WelcomeModal';
 import { ErrorScreen } from '../widgets/ErrorScreen/ui/ErrorScreen';
 import { useGameStore } from '../shared/model/useGameStore';
+import { useState } from 'react';
 import { EventBus } from '../shared/lib/phaser/EventBus';
 import './App.css';
 
@@ -27,6 +29,21 @@ function App() {
   const setFullscreen = useGameStore((state) => state.setFullscreen);
   const volume = useGameStore((state) => state.volume);
   const setVolume = useGameStore((state) => state.setVolume);
+
+  const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(() => {
+    return typeof window !== 'undefined' && (!localStorage.getItem('pyco_player_name'));
+  });
+
+  // Listen for manual nickname change requests
+  useEffect(() => {
+    const handleOpenWelcome = () => {
+      setIsWelcomeModalOpen(true);
+    };
+    EventBus.on('open-welcome-modal', handleOpenWelcome);
+    return () => {
+      EventBus.off('open-welcome-modal', handleOpenWelcome);
+    };
+  }, []);
 
   // Sync fullscreen state with browser events
   useEffect(() => {
@@ -163,6 +180,7 @@ function App() {
       {isStarted && !isLoading && !hasSeenManual && <InstructionPopup />}
       <VictoryOverlay />
       <LevelSelectModal />
+      {isWelcomeModalOpen && <WelcomeModal onClose={() => setIsWelcomeModalOpen(false)} />}
 
       {/* High Priority Overlays */}
       {isLoading && <LoadingScreen />}

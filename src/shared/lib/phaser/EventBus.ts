@@ -12,6 +12,7 @@ export type GameEventMap = {
   'pause-game': void;
   'resume-game': void;
   'restart-game': void;
+  'open-welcome-modal': void;
   
   // Scene -> UI
   'show-game-over': void;

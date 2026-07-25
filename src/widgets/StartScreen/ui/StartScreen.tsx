@@ -9,6 +9,7 @@ export const StartScreen = () => {
   const isFullscreen = useGameStore((state) => state.isFullscreen);
   const volume = useGameStore((state) => state.volume);
   const setVolume = useGameStore((state) => state.setVolume);
+  const playerName = useGameStore((state) => state.playerName);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Add custom styles for the "dance", "glow", "float" and "shimmer" animations
@@ -148,6 +149,21 @@ export const StartScreen = () => {
             </svg>
             <div className="absolute -inset-1 bg-white/10 rounded-2xl blur opacity-0 group-hover/btn:opacity-100 transition-opacity"></div>
           </button>
+
+          {/* Top-Center/Left: Player Nickname Badge */}
+          <div className="absolute top-6 left-24 z-[120]">
+            <button
+              onClick={() => EventBus.emit('open-welcome-modal')}
+              className="flex items-center gap-2.5 px-4 py-2.5 bg-black/60 hover:bg-black/80 border border-sky-400/40 hover:border-sky-400 rounded-2xl backdrop-blur-md transition-all duration-300 shadow-xl group/nick"
+              title="Сменить никнейм"
+            >
+              <span className="text-xl">👤</span>
+              <span className="text-sm font-bold text-sky-200 group-hover/nick:text-white transition-colors">
+                {playerName || 'Ввести Ник'}
+              </span>
+              <span className="text-xs text-sky-400/80 group-hover/nick:translate-x-0.5 transition-transform">✏️</span>
+            </button>
+          </div>
 
           {/* Top-Right: Volume & Mute Controls (over image) */}
           <div className="absolute top-6 right-6 z-[120] flex items-start gap-3">
